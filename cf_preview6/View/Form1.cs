@@ -75,7 +75,6 @@ namespace cf_preview6
             {
                 string sid = dgv.SelectedRows[0].Cells["StudentID"].Value.ToString();
                 string cid = dgv.SelectedRows[0].Cells["CourseID"].Value.ToString();
-                MessageBox.Show(sid, cid);
                 DetailsForm dform = new DetailsForm(sid, cid);
                 dform.ReloadMainform = new DetailsForm.MyDelegate(this.ReloadDgv); // Ham this.Reload() se duoc thuc thi khi MyDelegate DetailsForm duoc goi
                 dform.Show();
