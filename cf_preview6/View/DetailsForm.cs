@@ -198,10 +198,16 @@ namespace cf_preview6.View
             {
                 if (exTb.Text.Length > 0 && midTb.Text.Length > 0 && finalTb.Text.Length > 0)
                 {
-                    totalTb.Text =
-                         (0.2 * Convert.ToDouble(exTb.Text)
-                        + 0.2 * Convert.ToDouble(midTb.Text)
-                        + 0.6 * Convert.ToDouble(finalTb.Text)).ToString();
+                    double exg = Convert.ToDouble(exTb.Text);
+                    double midg = Convert.ToDouble(midTb.Text);
+                    double fing = Convert.ToDouble(finalTb.Text);
+
+                    if (exg > 10 || midg > 10 || fing > 10 || exg < 0 || midg < 0 || fing < 0)
+                    {
+                        throw new Exception("Diem so nhap vao khong hop le");
+                    }
+
+                    totalTb.Text = (exg * 0.2 + midg * 0.2 + fing * 0.6).ToString();
                 }
 
                 else totalTb.Clear();
