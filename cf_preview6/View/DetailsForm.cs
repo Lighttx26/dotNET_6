@@ -197,5 +197,47 @@ namespace cf_preview6.View
                 ((TextBox)sender).Clear();
             }
         }
+
+        private void studentidTb_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_studentid.Length > 0 && _courseid.Length > 0) return;
+                if (studentidTb.Text.Length > 0)
+                {
+                    if (BLL.BLL.Instance.IsExistStudentID(studentidTb.Text))
+                    {
+                        Student student = BLL.BLL.Instance.GetStudentByID(studentidTb.Text);
+                        // Set student name
+                        nameTb.ReadOnly = true;
+                        nameTb.Text = student.StudentName;
+                        // Set class name
+                        classCbb.Enabled = false;
+                        classCbb.Text = student.ClassName;
+                        // Set gender
+                        groupBox1.Enabled = false;
+                        if (student.Gender) maleRadio.Checked = true;
+                        else femaleRadio.Checked = true;
+                    }
+
+                    else
+                    {
+                        // Return default value
+                        nameTb.ReadOnly = false;
+                        nameTb.Clear();
+                        classCbb.Enabled = true;
+                        classCbb.Text = "";
+                        groupBox1.Enabled = true;
+                        maleRadio.Checked = false;
+                        femaleRadio.Checked = false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

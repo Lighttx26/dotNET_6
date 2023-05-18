@@ -246,6 +246,7 @@
             this.studentidTb.Name = "studentidTb";
             this.studentidTb.Size = new System.Drawing.Size(163, 22);
             this.studentidTb.TabIndex = 22;
+            this.studentidTb.TextChanged += new System.EventHandler(this.studentidTb_TextChanged);
             // 
             // label1
             // 

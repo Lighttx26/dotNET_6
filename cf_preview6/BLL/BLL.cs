@@ -54,6 +54,11 @@ namespace cf_preview6.BLL
             return list;
         }
 
+        public Student GetStudentByID(string studentid)
+        {
+            return DAL.DAL.Instance.GetStudentByID(studentid);
+        }
+
         public dgvItem GetStudentCourse(string studentid, string courseid)
         {
             return DAL.DAL.Instance.GetStudentCourseByPK(studentid, courseid);
@@ -61,7 +66,7 @@ namespace cf_preview6.BLL
 
         public List<ItemCBB> GetAllCourse()
         {
-            return DAL.DAL.Instance.GetCourses();
+            return DAL.DAL.Instance.GetAllCourses();
         }
 
         public bool IsExistStudentID(string studentid)

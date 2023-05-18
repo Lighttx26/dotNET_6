@@ -143,7 +143,7 @@ namespace cf_preview6.DAL
             return list;
         }
 
-        public List<ItemCBB> GetCourses()
+        public List<ItemCBB> GetAllCourses()
         {
             List<ItemCBB> list = new List<ItemCBB>();
 
@@ -162,6 +162,17 @@ namespace cf_preview6.DAL
             }
 
             return list;
+        }
+
+        public Student GetStudentByID(string studentid)
+        {
+            Student student = new Student();
+            using (Model model = new Model())
+            {
+                var st = model.Students.Where(s => s.StudentID == studentid).First();
+                student = st;
+            }
+            return student;
         }
 
         public dgvItem GetStudentCourseByPK(string studentid, string courseid)

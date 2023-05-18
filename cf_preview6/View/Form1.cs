@@ -83,6 +83,7 @@ namespace cf_preview6
             RenameColumn();
 
             tbSearch.Clear();
+            cbbSort.Text = "<NONE>";
         }
 
         private void searchBtn_Click(object sender, EventArgs e)
@@ -92,6 +93,8 @@ namespace cf_preview6
 
             dgv.DataSource = BLL.BLL.Instance.GetStudentsCoursesBySearch(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value, tbSearch.Text);
             RenameColumn();
+
+            cbbSort.Text = "<NONE>";
         }
 
         private void sortBtn_Click(object sender, EventArgs e)
