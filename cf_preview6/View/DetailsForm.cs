@@ -28,12 +28,13 @@ namespace cf_preview6.View
         }
         private void DetailsForm_Load(object sender, EventArgs e)
         {
-            courseCbb.Items.AddRange(BLL.BLL.Instance.GetListCourse().ToArray());
+            ReloadClassCb();
+            courseCbb.Items.AddRange(BLL.BLL.Instance.GetAllCourse().ToArray());
             totalTb.ReadOnly = true;
 
             if (_studentid != "" && _courseid != "")
             {
-                var st = BLL.BLL.Instance.GetStudentCourseByID(_studentid, _courseid);
+                var st = BLL.BLL.Instance.GetStudentCourse(_studentid, _courseid);
 
                 studentidTb.Text = st.StudentID;
                 studentidTb.ReadOnly = true;
@@ -48,6 +49,19 @@ namespace cf_preview6.View
                 finalTb.Text = st.Grade_final.ToString();
                 totalTb.Text = st.Grade_total.ToString();
             }
+        }
+
+        private void ReloadClassCb()
+        {
+            classCbb.Items.AddRange(new string[]
+            {
+                "21T_DT",
+                "21T_DT2",
+                "21TCLC_DT1",
+                "21TCLC_DT2",
+                "21TCLC_DT3",
+                "21TCLC_DT4",
+            });
         }
 
         // Them moi StudentCourse (Them sinh vien moi vao hoc phan)
@@ -68,7 +82,7 @@ namespace cf_preview6.View
                 }
 
                 // Kiem tra sinh vien co trong lop hoc do chua
-                if (BLL.BLL.Instance.IsExistStudentCourse(studentidTb.Text, ((CourseCBB)courseCbb.SelectedItem).Value))
+                if (BLL.BLL.Instance.IsExistStudentCourse(studentidTb.Text, ((ItemCBB)courseCbb.SelectedItem).Value))
                 {
                     throw new Exception("Sinh vien da co trong hoc phan");
                 }
@@ -77,7 +91,7 @@ namespace cf_preview6.View
                 BLL.BLL.Instance.AddStudentCourse(new StudentCourse
                 {
                     StudentID = studentidTb.Text,
-                    CourseID = ((CourseCBB)courseCbb.SelectedItem).Value,
+                    CourseID = ((ItemCBB)courseCbb.SelectedItem).Value,
                     Grade_ex = Convert.ToDouble(exTb.Text),
                     Grade_mid = Convert.ToDouble(midTb.Text),
                     Grade_final = Convert.ToDouble(finalTb.Text),
@@ -111,7 +125,7 @@ namespace cf_preview6.View
                 StudentCourse sc = new StudentCourse
                 {
                     StudentID = _studentid,
-                    CourseID = ((CourseCBB)courseCbb.SelectedItem).Value,
+                    CourseID = ((ItemCBB)courseCbb.SelectedItem).Value,
                     Grade_ex = Convert.ToDouble(exTb.Text),
                     Grade_mid = Convert.ToDouble(midTb.Text),
                     Grade_final = Convert.ToDouble(finalTb.Text),
@@ -119,7 +133,7 @@ namespace cf_preview6.View
                 };
 
                 // Khong thay doi lop hoc phan
-                if (((CourseCBB)courseCbb.SelectedItem).Value == _courseid)
+                if (((ItemCBB)courseCbb.SelectedItem).Value == _courseid)
                 {
                     // Cap nhat lai cac thong tin
                     BLL.BLL.Instance.UpdateStudentCourse(sc);
@@ -132,7 +146,7 @@ namespace cf_preview6.View
                     BLL.BLL.Instance.DeleteStudentCourse(_studentid, _courseid);
 
                     // Kiem tra sinh vien co trong lop hoc do chua
-                    if (BLL.BLL.Instance.IsExistStudentCourse(studentidTb.Text, ((CourseCBB)courseCbb.SelectedItem).Value))
+                    if (BLL.BLL.Instance.IsExistStudentCourse(studentidTb.Text, ((ItemCBB)courseCbb.SelectedItem).Value))
                     {
                         throw new Exception("Sinh vien da co trong hoc phan");
                     }
@@ -160,6 +174,28 @@ namespace cf_preview6.View
         private void CancelBtn_Click(object sender, EventArgs e)
         {
             this.Dispose();
+        }
+
+        private void gradeTbs_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (exTb.Text.Length > 0 && midTb.Text.Length > 0 && finalTb.Text.Length > 0)
+                {
+                    totalTb.Text =
+                         (0.2 * Convert.ToDouble(exTb.Text)
+                        + 0.2 * Convert.ToDouble(midTb.Text)
+                        + 0.6 * Convert.ToDouble(finalTb.Text)).ToString();
+                }
+
+                else totalTb.Clear();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                ((TextBox)sender).Clear();
+            }
         }
     }
 }

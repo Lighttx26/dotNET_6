@@ -21,3 +21,6 @@ D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\obj\Debug\cf_preview6.
 D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\obj\Debug\cf_preview6.Migrations.AddAbsentColumn.resources
 D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\obj\Debug\cf_preview6.Migrations.DropAbsentColumn.resources
 D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\obj\Debug\cf_preview6.Migrations.Change2.resources
+D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\bin\Debug\System.Linq.Dynamic.Core.dll
+D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\bin\Debug\System.Linq.Dynamic.Core.pdb
+D:\QUANG\Hoc tap\dotNET\CSharp VS\cf_preview6\cf_preview6\bin\Debug\System.Linq.Dynamic.Core.xml

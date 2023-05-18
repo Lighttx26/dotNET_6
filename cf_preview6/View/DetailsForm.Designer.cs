@@ -129,6 +129,7 @@
             this.finalTb.Name = "finalTb";
             this.finalTb.Size = new System.Drawing.Size(163, 22);
             this.finalTb.TabIndex = 36;
+            this.finalTb.TextChanged += new System.EventHandler(this.gradeTbs_TextChanged);
             // 
             // label8
             // 
@@ -145,6 +146,7 @@
             this.midTb.Name = "midTb";
             this.midTb.Size = new System.Drawing.Size(163, 22);
             this.midTb.TabIndex = 34;
+            this.midTb.TextChanged += new System.EventHandler(this.gradeTbs_TextChanged);
             // 
             // label7
             // 
@@ -161,6 +163,7 @@
             this.exTb.Name = "exTb";
             this.exTb.Size = new System.Drawing.Size(163, 22);
             this.exTb.TabIndex = 32;
+            this.exTb.TextChanged += new System.EventHandler(this.gradeTbs_TextChanged);
             // 
             // label6
             // 

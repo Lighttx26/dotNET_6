@@ -1,10 +1,12 @@
 ﻿using cf_preview6.DTO;
+using cf_preview6.DAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace cf_preview6.BLL
 {
@@ -22,219 +24,151 @@ namespace cf_preview6.BLL
             private set { }
         }
 
-        private double Total(double BT, double GK, double CK)
+        public List<dgvItem> GetAllStudentsCourses()
         {
-            return 0.2 * BT + 0.2 * GK + 0.6 * CK;
+            return DAL.DAL.Instance.GetAllStudentsCourses();
         }
 
-        private List<dgvItem> GetListStudents(string courseid = "0", string searchtxt ="")
+        public List<dgvItem> GetStudentsInCourse(List<dgvItem> list, string courseid = "0")
         {
-            List<dgvItem> list = new List<dgvItem>();
+            return list.Where(sc => sc.CourseID == courseid || courseid == "0").ToList();
+        }
 
-            using (Model model = new Model())
-            {
-                var list1 = model.StudentsCourses.Join(model.Students, sc => sc.StudentID, s => s.StudentID, (sc, s) => new
-                {
-                    sc,
-                    s
-                }).Join(model.Courses, sc2 => sc2.sc.CourseID, c => c.CourseID, (sc2, c) => new
-                {
-                    sc2.sc,
-                    sc2.s,
-                    c
-                }).Select(x => new
-                {
-                    StudentID = x.s.StudentID,
-                    StudentName = x.s.StudentName,
-                    ClassName = x.s.ClassName,
-                    Gender = x.s.Gender,
-                    CourseID = x.c.CourseID,
-                    CourseName = x.c.CourseName,
-                    Grade_ex = x.sc.Grade_ex,
-                    Grade_mid = x.sc.Grade_mid,
-                    Grade_final = x.sc.Grade_final,
-                    ExamDay = x.sc.ExaminationTime,
-                }).Where(x => (x.CourseID == courseid || courseid == "0") && (x.StudentName.Contains(searchtxt) || x.ClassName.Contains(searchtxt)));
+        public List<dgvItem> GetStudentsCoursesBySearch(List<dgvItem> list, string courseid = "0", string searchtxt ="")
+        {
+            return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
+        }
 
-                foreach (var st in list1)
-                {
-                    list.Add(new dgvItem
-                    {
-                        StudentID = st.StudentID,
-                        StudentName = st.StudentName,
-                        ClassName = st.ClassName,
-                        Gender = st.Gender,
-                        CourseID = st.CourseID,
-                        CourseName = st.CourseName,
-                        Grade_ex = st.Grade_ex,
-                        Grade_mid = st.Grade_mid,
-                        Grade_final = st.Grade_final,
-                        Grade_total = Total(st.Grade_ex, st.Grade_mid, st.Grade_final),
-                        ExamDay = st.ExamDay
-                    });
-                }
-            }
+        public List<dgvItem> GetStudentsCoursesBySort(List<dgvItem> list, string courseid = "0", string searchtxt = "", string sortfield = "NONE")
+        {
+            if (sortfield == "NONE") 
+                return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
+
+            PropertyInfo propertyInfo = typeof(dgvItem).GetProperty(sortfield);
+
+            list = list.Where(sc =>
+                        (sc.CourseID == courseid || courseid == "0") &&
+                        (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt)))
+                    .OrderBy(sc => propertyInfo.GetValue(sc)).ToList();
 
             return list;
         }
 
-        public List<dgvItem> GetAllStudents()
+        public dgvItem GetStudentCourse(string studentid, string courseid)
         {
-            return this.GetListStudents();
+            return DAL.DAL.Instance.GetStudentCourseByPK(studentid, courseid);
         }
 
-        public List<dgvItem> GetStudentsInCourse(string courseid)
+        public List<ItemCBB> GetAllCourse()
         {
-            return this.GetListStudents(courseid);
-        }
-
-        public List<dgvItem> GetStudentsBySearch(string courseid, string searchtxt)
-        {
-            return this.GetListStudents(courseid, searchtxt);
-        }
-
-        public List<CourseCBB> GetListCourse()
-        {
-            List<CourseCBB> list = new List<CourseCBB>();
-
-            using (Model model = new Model()) 
-            {
-                var list1 = model.Courses.Select(c => new {c.CourseID, c.CourseName});
-
-                foreach (var c in list1)
-                {
-                    list.Add(new CourseCBB
-                    {
-                        Value = c.CourseID,
-                        Text = c.CourseName,
-                    });
-                }
-            }
-
-            return list;
-        }
-
-        public dgvItem GetStudentCourseByID(string studentid, string courseid)
-        {
-            dgvItem di;
-            using (Model model = new Model())
-            {
-                var st = model.StudentsCourses.Join(model.Students, sc => sc.StudentID, s => s.StudentID, (sc, s) => new
-                {
-                    sc,
-                    s
-                }).Join(model.Courses, sc2 => sc2.sc.CourseID, c => c.CourseID, (sc2, c) => new
-                {
-                    sc2.sc,
-                    sc2.s,
-                    c
-                }).Where(x => x.s.StudentID == studentid && x.c.CourseID == courseid).Select(x => new
-                {
-                    StudentID = x.s.StudentID,
-                    StudentName = x.s.StudentName,
-                    ClassName = x.s.ClassName,
-                    Gender = x.s.Gender,
-                    CourseID = x.c.CourseID,
-                    CourseName = x.c.CourseName,
-                    Grade_ex = x.sc.Grade_ex,
-                    Grade_mid = x.sc.Grade_mid,
-                    Grade_final = x.sc.Grade_final,
-                    ExamDay = x.sc.ExaminationTime,
-                }).First();
-
-                di = new dgvItem
-                {
-                    StudentID = st.StudentID,
-                    StudentName = st.StudentName,
-                    ClassName = st.ClassName,
-                    Gender = st.Gender,
-                    CourseID = st.CourseID,
-                    CourseName = st.CourseName,
-                    Grade_ex = st.Grade_ex,
-                    Grade_mid = st.Grade_mid,
-                    Grade_final = st.Grade_final,
-                    Grade_total = Total(st.Grade_ex, st.Grade_mid, st.Grade_final),
-                    ExamDay = st.ExamDay
-                };
-            }
-            return di;
+            return DAL.DAL.Instance.GetCourses();
         }
 
         public bool IsExistStudentID(string studentid)
         {
-            bool result;
-            using (Model model = new Model())
+            try
             {
-                bool st = model.Students.Any(s => s.StudentID == studentid);
-                result = st;
+                return DAL.DAL.Instance.IsExistStudentID(studentid);
             }
-            return result;
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
         }
 
         public bool IsExistStudentCourse(string studentid, string courseid)
         {
-            bool result;
-            using (Model model = new Model())
+            try
             {
-                bool st = model.StudentsCourses.Any(sc => sc.StudentID == studentid && sc.CourseID == courseid);
-                result = st;
+                return DAL.DAL.Instance.IsExistStudentCourse(studentid, courseid);
             }
-            return result;
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
         }
 
         public void AddStudent(Student s)
         {
-            using (Model model = new Model())
+            try
             {
-                model.Students.Add(s);
-                model.SaveChanges();
+                if (s != null)
+                {
+                    DAL.DAL.Instance.AddStudent(s);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         public void UpdateStudent(Student s)
         {
-            using (Model model = new Model())
+            try
             {
-                var _student = model.Students.Single(st => st.StudentID == s.StudentID);
-                _student.StudentName = s.StudentName;
-                _student.ClassName = s.ClassName;
-                _student.Gender = s.Gender;
+                if (s != null)
+                {
+                    DAL.DAL.Instance.UpdateStudent(s);
+                }
+            }
 
-                model.SaveChanges();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         public void AddStudentCourse(StudentCourse sc)
         {
-            using (Model model = new Model())
+            try
             {
-                model.StudentsCourses.Add(sc);
-                model.SaveChanges();
+                if (sc != null)
+                {
+                    DAL.DAL.Instance.AddStudentCourse(sc);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         public void UpdateStudentCourse(StudentCourse sc)
         {
-            using (Model model = new Model())
+            try
             {
-                var _sc = model.StudentsCourses.Single(stc => stc.StudentID == sc.StudentID && stc.CourseID == sc.CourseID);
-                _sc.StudentID = sc.StudentID;
-                _sc.CourseID = sc.CourseID;
-                _sc.Grade_ex = sc.Grade_ex;
-                _sc.Grade_mid = sc.Grade_mid;
-                _sc.Grade_final = sc.Grade_final;
-                _sc.ExaminationTime = sc.ExaminationTime;
-                model.SaveChanges();
+                if (sc != null)
+                {
+                    DAL.DAL.Instance.UpdateStudentCourse(sc);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         public void DeleteStudentCourse(string studentid, string courseid)
         {
-            using (Model model = new Model())
+            try
             {
-                var _sc = model.StudentsCourses.Single(sc => sc.CourseID == courseid && sc.StudentID == studentid);
-                model.StudentsCourses.Remove(_sc);
-                model.SaveChanges();
+                if (this.IsExistStudentCourse(studentid, courseid))
+                {
+                    DAL.DAL.Instance.DeleteStudentCourse(studentid, courseid);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

@@ -66,6 +66,7 @@
             this.sortBtn.TabIndex = 19;
             this.sortBtn.Text = "Sort";
             this.sortBtn.UseVisualStyleBackColor = true;
+            this.sortBtn.Click += new System.EventHandler(this.sortBtn_Click);
             // 
             // deleteBtn
             // 
@@ -125,6 +126,7 @@
             // 
             // dgv
             // 
+            this.dgv.AllowUserToOrderColumns = true;
             this.dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv.Location = new System.Drawing.Point(12, 88);
@@ -134,6 +136,7 @@
             this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgv.Size = new System.Drawing.Size(776, 266);
             this.dgv.TabIndex = 12;
+            this.dgv.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgv_RowPostPaint);
             // 
             // Form1
             // 

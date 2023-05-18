@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cf_preview6.DTO
 {
-    internal class CourseCBB
+    internal class ItemCBB
     {
         public string Value { get; set; }
         public string Text { get; set; }

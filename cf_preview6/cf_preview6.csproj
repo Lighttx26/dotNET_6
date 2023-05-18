@@ -45,6 +45,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic.Core, Version=1.3.2.0, Culture=neutral, PublicKeyToken=0f07ec44de6ac832, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.Core.1.3.2\lib\net46\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -59,8 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\BLL.cs" />
+    <Compile Include="DAL\DAL.cs" />
     <Compile Include="DTO\Course.cs" />
-    <Compile Include="DTO\CourseCBB.cs" />
+    <Compile Include="DTO\ItemCBB.cs" />
     <Compile Include="DTO\dgvItem.cs" />
     <Compile Include="DTO\Student.cs" />
     <Compile Include="DTO\StudentCourse.cs" />
