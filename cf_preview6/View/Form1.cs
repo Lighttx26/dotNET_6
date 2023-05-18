@@ -42,7 +42,7 @@ namespace cf_preview6
         {
             if (dgv.SelectedRows.Count != 1)
             {
-                MessageBox.Show("Please select one row");
+                MessageBox.Show("Chon 1 hang de thuc hien");
             }
 
             else
@@ -59,7 +59,7 @@ namespace cf_preview6
         {
             if (dgv.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please selecte one row");
+                MessageBox.Show("Chon 1 hang de thuc hien");
             }
 
             else
@@ -165,14 +165,5 @@ namespace cf_preview6
         }
 
         #endregion
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            using (Model model = new Model())
-            {
-                var test = model.StudentsCourses.Include(sc => sc.Course).ToList();
-                Console.WriteLine(test[0].Course.CourseName);
-            }
-        }
     }
 }

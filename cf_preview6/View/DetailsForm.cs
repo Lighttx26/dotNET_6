@@ -64,13 +64,38 @@ namespace cf_preview6.View
             });
         }
 
+        #region BUTTON HANDLER
+        private void OkBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CheckEmptyBox();
+                if (_studentid == "") AddHandler();
+                else EditHandler();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CancelBtn_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+        }
+
+        #endregion
+
+        #region OKBUTTON HANDLER
+
         // Them moi StudentCourse (Them sinh vien moi vao hoc phan)
         private void AddHandler()
         {
             try
             {
                 // Neu mssv chua co thi them sinh vien moi vao DB
-                if(!BLL.BLL.Instance.IsExistStudentID(studentidTb.Text))
+                if (!BLL.BLL.Instance.IsExistStudent(studentidTb.Text))
                 {
                     BLL.BLL.Instance.AddStudent(new Student
                     {
@@ -92,9 +117,9 @@ namespace cf_preview6.View
                 {
                     StudentID = studentidTb.Text,
                     CourseID = ((ItemCBB)courseCbb.SelectedItem).Value,
-                    //Grade_ex = Convert.ToDouble(exTb.Text),
-                    //Grade_mid = Convert.ToDouble(midTb.Text),
-                    //Grade_final = Convert.ToDouble(finalTb.Text),
+                    Grade_ex = Convert.ToDouble(exTb.Text),
+                    Grade_mid = Convert.ToDouble(midTb.Text),
+                    Grade_final = Convert.ToDouble(finalTb.Text),
                     ExaminationTime = Convert.ToDateTime(examdayDtp.Text),
                 });
 
@@ -107,7 +132,7 @@ namespace cf_preview6.View
                 MessageBox.Show(e.Message);
             }
         }
-
+        // Chinh sua StudentCourse & Student
         private void EditHandler()
         {
             try
@@ -165,16 +190,7 @@ namespace cf_preview6.View
             }
         }
 
-        private void OkBtn_Click(object sender, EventArgs e)
-        {
-            if (_studentid == "") AddHandler();
-            else EditHandler();
-        }
-
-        private void CancelBtn_Click(object sender, EventArgs e)
-        {
-            this.Dispose();
-        }
+        #endregion
 
         private void gradeTbs_TextChanged(object sender, EventArgs e)
         {
@@ -205,7 +221,7 @@ namespace cf_preview6.View
                 if (_studentid.Length > 0 && _courseid.Length > 0) return;
                 if (studentidTb.Text.Length > 0)
                 {
-                    if (BLL.BLL.Instance.IsExistStudentID(studentidTb.Text))
+                    if (BLL.BLL.Instance.IsExistStudent(studentidTb.Text))
                     {
                         Student student = BLL.BLL.Instance.GetStudentByID(studentidTb.Text);
                         // Set student name
@@ -238,6 +254,18 @@ namespace cf_preview6.View
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void CheckEmptyBox()
+        {
+            if (studentidTb.Text == "") throw new Exception("Khong duoc de trong MSSV");
+            if (nameTb.Text == "") throw new Exception("Khong duoc de trong ten");
+            if (classCbb.Text == "") throw new Exception("Khong duoc de trong ten lop");
+            if (courseCbb.Text == "") throw new Exception("Khong duoc de trong hoc phan");
+            if (!(maleRadio.Checked || femaleRadio.Checked)) throw new Exception("Khong duoc de trong gioi tinh");
+            if (exTb.Text == "") throw new Exception("Khong duoc de trong diem BT");
+            if (midTb.Text == "") throw new Exception("Khong duoc de trong diem GK");
+            if (finalTb.Text == "") throw new Exception("Khong duoc de trong diem CK");
         }
     }
 }
