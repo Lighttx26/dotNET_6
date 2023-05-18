@@ -38,6 +38,7 @@
             this.tbSearch = new System.Windows.Forms.TextBox();
             this.cbbCourse = new System.Windows.Forms.ComboBox();
             this.dgv = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,11 +139,22 @@
             this.dgv.TabIndex = 12;
             this.dgv.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgv_RowPostPaint);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(348, 40);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 22;
+            this.button1.Text = "Search";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cbbSort);
             this.Controls.Add(this.sortBtn);
@@ -174,6 +186,7 @@
         private System.Windows.Forms.TextBox tbSearch;
         private System.Windows.Forms.ComboBox cbbCourse;
         private System.Windows.Forms.DataGridView dgv;
+        private System.Windows.Forms.Button button1;
     }
 }
 

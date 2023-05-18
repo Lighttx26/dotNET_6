@@ -24,65 +24,120 @@ namespace cf_preview6.BLL
             private set { }
         }
 
+        #region Retrieve
         public List<dgvItem> GetAllStudentsCourses()
         {
-            return DAL.DAL.Instance.GetAllStudentsCourses();
+            try
+            {
+                return DAL.DAL.Instance.GetAllStudentsCourses();
+            }
+            
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
         }
 
         public List<dgvItem> GetStudentsInCourse(List<dgvItem> list, string courseid = "0")
         {
-            return list.Where(sc => sc.CourseID == courseid || courseid == "0").ToList();
-        }
-
-        public List<dgvItem> GetStudentsCoursesBySearch(List<dgvItem> list, string courseid = "0", string searchtxt ="")
-        {
-            return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
-        }
-
-        public List<dgvItem> GetStudentsCoursesBySort(List<dgvItem> list, string courseid = "0", string searchtxt = "", string sortfield = "NONE")
-        {
-            if (sortfield == "NONE") 
-                return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
-
-            PropertyInfo propertyInfo = typeof(dgvItem).GetProperty(sortfield);
-
-            list = list.Where(sc =>
-                        (sc.CourseID == courseid || courseid == "0") &&
-                        (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt)))
-                    .OrderBy(sc => propertyInfo.GetValue(sc)).ToList();
-
-            return list;
-        }
-
-        public Student GetStudentByID(string studentid)
-        {
-            return DAL.DAL.Instance.GetStudentByID(studentid);
-        }
-
-        public dgvItem GetStudentCourse(string studentid, string courseid)
-        {
-            return DAL.DAL.Instance.GetStudentCourseByPK(studentid, courseid);
-        }
-
-        public List<ItemCBB> GetAllCourse()
-        {
-            return DAL.DAL.Instance.GetAllCourses();
-        }
-
-        public bool IsExistStudentID(string studentid)
-        {
             try
             {
-                return DAL.DAL.Instance.IsExistStudentID(studentid);
+                return list.Where(sc => sc.CourseID == courseid || courseid == "0").ToList();
             }
 
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return false;
+                return null;
             }
         }
 
+        public List<dgvItem> GetStudentsCoursesBySearch(List<dgvItem> list, string courseid = "0", string searchtxt ="")
+        {
+            try
+            {
+                return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        public List<dgvItem> GetStudentsCoursesBySort(List<dgvItem> list, string courseid = "0", string searchtxt = "", string sortfield = "NONE")
+        {
+            try
+            {
+                if (sortfield == "NONE")
+                    return list.Where(sc => (sc.CourseID == courseid || courseid == "0") && (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt))).ToList();
+
+                PropertyInfo propertyInfo = typeof(dgvItem).GetProperty(sortfield);
+
+
+                list = list.Where(sc =>
+                            (sc.CourseID == courseid || courseid == "0") &&
+                            (sc.StudentName.Contains(searchtxt) || sc.ClassName.Contains(searchtxt)))
+                        .OrderBy(sc => propertyInfo.GetValue(sc)).ToList();
+
+                return list;
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+            
+        }
+
+        public dgvItem GetStudentCourse(string studentid, string courseid)
+        {
+            try
+            {
+                return DAL.DAL.Instance.GetStudentCourseByPK(studentid, courseid);
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        public Student GetStudentByID(string studentid)
+        {
+            try
+            {
+                return DAL.DAL.Instance.GetStudentByID(studentid);
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        public List<ItemCBB> GetAllCourse()
+        {
+            try
+            {
+                return DAL.DAL.Instance.GetAllCourses();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Check for existence
         public bool IsExistStudentCourse(string studentid, string courseid)
         {
             try
@@ -97,6 +152,23 @@ namespace cf_preview6.BLL
             }
         }
 
+        public bool IsExistStudent(string studentid)
+        {
+            try
+            {
+                return DAL.DAL.Instance.IsExistStudentID(studentid);
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region CUD Methods
         public void AddStudent(Student s)
         {
             try
@@ -117,7 +189,7 @@ namespace cf_preview6.BLL
         {
             try
             {
-                if (s != null)
+                if (s != null && IsExistStudent(s.StudentID))
                 {
                     DAL.DAL.Instance.UpdateStudent(s);
                 }
@@ -149,7 +221,7 @@ namespace cf_preview6.BLL
         {
             try
             {
-                if (sc != null)
+                if (sc != null && IsExistStudentCourse(sc.StudentID, sc.CourseID))
                 {
                     DAL.DAL.Instance.UpdateStudentCourse(sc);
                 }
@@ -176,5 +248,7 @@ namespace cf_preview6.BLL
                 MessageBox.Show(ex.Message);
             }
         }
+
+        #endregion
     }
 }

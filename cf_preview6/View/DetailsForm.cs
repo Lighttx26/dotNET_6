@@ -92,9 +92,9 @@ namespace cf_preview6.View
                 {
                     StudentID = studentidTb.Text,
                     CourseID = ((ItemCBB)courseCbb.SelectedItem).Value,
-                    Grade_ex = Convert.ToDouble(exTb.Text),
-                    Grade_mid = Convert.ToDouble(midTb.Text),
-                    Grade_final = Convert.ToDouble(finalTb.Text),
+                    //Grade_ex = Convert.ToDouble(exTb.Text),
+                    //Grade_mid = Convert.ToDouble(midTb.Text),
+                    //Grade_final = Convert.ToDouble(finalTb.Text),
                     ExaminationTime = Convert.ToDateTime(examdayDtp.Text),
                 });
 

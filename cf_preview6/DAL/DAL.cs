@@ -1,6 +1,7 @@
 ﻿using cf_preview6.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
@@ -98,28 +99,38 @@ namespace cf_preview6.DAL
 
             using (Model model = new Model())
             {
-                var dblist = model.StudentsCourses.Join(model.Students, sc => sc.StudentID, s => s.StudentID, (sc, s) => new
-                {
-                    sc,
-                    s
-                }).Join(model.Courses, sc2 => sc2.sc.CourseID, c => c.CourseID, (sc2, c) => new
-                {
-                    sc2.sc,
-                    sc2.s,
-                    c
-                }).Select(x => new
-                {
-                    StudentID = x.s.StudentID,
-                    StudentName = x.s.StudentName,
-                    ClassName = x.s.ClassName,
-                    Gender = x.s.Gender,
-                    CourseID = x.c.CourseID,
-                    CourseName = x.c.CourseName,
-                    Grade_ex = x.sc.Grade_ex,
-                    Grade_mid = x.sc.Grade_mid,
-                    Grade_final = x.sc.Grade_final,
-                    ExamDay = x.sc.ExaminationTime,
-                });
+                var dblist = model.StudentsCourses.Include(p => p.Course).Include(p => p.Student)
+                    .Select(sc => new
+                    {
+                        StudentID = sc.StudentID,
+                        StudentName = sc.Student.StudentName,
+                        ClassName = sc.Student.ClassName,
+                        Gender = sc.Student.Gender,
+                        CourseID = sc.CourseID,
+                        CourseName = sc.Course.CourseName,
+                        Grade_ex = sc.Grade_ex,
+                        Grade_mid = sc.Grade_mid,
+                        Grade_final = sc.Grade_final,
+                        ExamDay = sc.ExaminationTime,
+                    }).ToList();
+
+
+                //var dblist = model.StudentsCourses
+                //.Join(model.Students, sc => sc.StudentID, s => s.StudentID, (sc, s) => new { sc, s })
+                //.Join(model.Courses, sc2 => sc2.sc.CourseID, c => c.CourseID, (sc2, c) => new { sc2.sc, sc2.s, c })
+                //.Select(x => new
+                //{
+                //    StudentID = x.s.StudentID,
+                //    StudentName = x.s.StudentName,
+                //    ClassName = x.s.ClassName,
+                //    Gender = x.s.Gender,
+                //    CourseID = x.c.CourseID,
+                //    CourseName = x.c.CourseName,
+                //    Grade_ex = x.sc.Grade_ex,
+                //    Grade_mid = x.sc.Grade_mid,
+                //    Grade_final = x.sc.Grade_final,
+                //    ExamDay = x.sc.ExaminationTime,
+                //});
 
                 foreach (var st in dblist)
                 {
@@ -169,7 +180,7 @@ namespace cf_preview6.DAL
             Student student = new Student();
             using (Model model = new Model())
             {
-                var st = model.Students.Where(s => s.StudentID == studentid).First();
+                var st = model.Students.Where(s => s.StudentID == studentid).FirstOrDefault();
                 student = st;
             }
             return student;
@@ -180,28 +191,21 @@ namespace cf_preview6.DAL
             dgvItem di;
             using (Model model = new Model())
             {
-                var st = model.StudentsCourses.Join(model.Students, sc => sc.StudentID, s => s.StudentID, (sc, s) => new
-                {
-                    sc,
-                    s
-                }).Join(model.Courses, sc2 => sc2.sc.CourseID, c => c.CourseID, (sc2, c) => new
-                {
-                    sc2.sc,
-                    sc2.s,
-                    c
-                }).Where(x => x.s.StudentID == studentid && x.c.CourseID == courseid).Select(x => new
-                {
-                    StudentID = x.s.StudentID,
-                    StudentName = x.s.StudentName,
-                    ClassName = x.s.ClassName,
-                    Gender = x.s.Gender,
-                    CourseID = x.c.CourseID,
-                    CourseName = x.c.CourseName,
-                    Grade_ex = x.sc.Grade_ex,
-                    Grade_mid = x.sc.Grade_mid,
-                    Grade_final = x.sc.Grade_final,
-                    ExamDay = x.sc.ExaminationTime,
-                }).First();
+                var st = model.StudentsCourses.Include(sc => sc.Course).Include(sc => sc.Student)
+                    .Where(sc => sc.StudentID == studentid && sc.CourseID == courseid)
+                    .Select(sc => new
+                    {
+                        StudentID = sc.StudentID,
+                        StudentName = sc.Student.StudentName,
+                        ClassName = sc.Student.ClassName,
+                        Gender = sc.Student.Gender,
+                        CourseID = sc.CourseID,
+                        CourseName = sc.Course.CourseName,
+                        Grade_ex = sc.Grade_ex,
+                        Grade_mid = sc.Grade_mid,
+                        Grade_final = sc.Grade_final,
+                        ExamDay = sc.ExaminationTime,
+                    }).FirstOrDefault();
 
                 di = new dgvItem
                 {

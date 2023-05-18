@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -63,11 +64,14 @@ namespace cf_preview6
 
             else
             {
-                foreach (DataGridViewRow row in dgv.SelectedRows)
+                if (MessageBox.Show("Bạn muốn xóa những dòng này?", "Xác nhận", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    string sid = row.Cells["StudentID"].Value.ToString();
-                    string cid = row.Cells["CourseID"].Value.ToString();
-                    BLL.BLL.Instance.DeleteStudentCourse(sid, cid);
+                    foreach (DataGridViewRow row in dgv.SelectedRows)
+                    {
+                        string sid = row.Cells["StudentID"].Value.ToString();
+                        string cid = row.Cells["CourseID"].Value.ToString();
+                        BLL.BLL.Instance.DeleteStudentCourse(sid, cid);
+                    }
                 }
             }
 
@@ -76,9 +80,6 @@ namespace cf_preview6
 
         private void cbbCourse_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //dgvItems = BLL.BLL.Instance.GetStudentsInCourse(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value);
-            //dgv.DataSource = dgvItems;
-
             dgv.DataSource = BLL.BLL.Instance.GetStudentsInCourse(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value);
             RenameColumn();
 
@@ -88,9 +89,6 @@ namespace cf_preview6
 
         private void searchBtn_Click(object sender, EventArgs e)
         {
-            //dgvItems = BLL.BLL.Instance.GetStudentsCoursesBySearch(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value, tbSearch.Text);
-            //dgv.DataSource = dgvItems;
-
             dgv.DataSource = BLL.BLL.Instance.GetStudentsCoursesBySearch(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value, tbSearch.Text);
             RenameColumn();
 
@@ -99,9 +97,6 @@ namespace cf_preview6
 
         private void sortBtn_Click(object sender, EventArgs e)
         {
-            //dgvItems = BLL.BLL.Instance.GetStudentsCoursesBySort(dgvItems, ((ItemCBB)cbbSort.SelectedItem).Value);
-            //dgv.DataSource = dgvItems;
-
             dgv.DataSource = BLL.BLL.Instance.GetStudentsCoursesBySort(dgvItems, ((ItemCBB)cbbCourse.SelectedItem).Value, tbSearch.Text, ((ItemCBB)cbbSort.SelectedItem).Value);
             RenameColumn();
         }
@@ -171,6 +166,13 @@ namespace cf_preview6
 
         #endregion
 
-
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (Model model = new Model())
+            {
+                var test = model.StudentsCourses.Include(sc => sc.Course).ToList();
+                Console.WriteLine(test[0].Course.CourseName);
+            }
+        }
     }
 }
